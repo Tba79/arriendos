@@ -2,8 +2,26 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 
-
 # Create your models here.
+class UserProfile(models.Model):
+    roles = (
+        ('arrendatario', 'Arrendatario'),
+        ('arrendador', 'Arrendador')
+    )
+    direccion = models.CharField(max_length=255)
+    telefono_personal = models.CharField(max_length=20, null=True)
+    rol = models.CharField(max_length=50, default='arrendatario', choices=roles)
+    user = models.OneToOneField(
+        User,
+        related_name='userprofile',
+        on_delete=models.CASCADE
+    )
+    def __str__(self):
+        nombre = self.user.first_name
+        apellido = self.user.last_name
+        usuario = self.user.username
+        rol = self.rol
+        return f'{nombre} {apellido} | {usuario} | {rol}'
 
 
 class Region(models.Model):
@@ -22,29 +40,6 @@ class Comuna(models.Model):
         nombre = self.nombre
         codigo = self.cod
         return f'{nombre} | {codigo}'
-
-class UserProfile(models.Model):
-    roles = (
-        ('arrendatario', 'Arrendatario'),
-        ('arrendador', 'Arrendador'),
-    )
-    
-    direccion = models.CharField(max_length=255)
-    telefono_personal = models.CharField(max_length=20, null=True)
-    rol = models.CharField(max_length=50, default='arrendatario', choices=roles)
-    user = models.OneToOneField(
-        User,
-        related_name='userprofile',
-        on_delete=models.CASCADE
-    )
-    def __str__(self):
-        nombre = self.user.first_name
-        apellido = self.user.last_name
-        usuario = self.user.username
-        rol = self.rol
-        return f'{nombre} {apellido} | {usuario} | {rol}'
-    
-
 
 class Inmueble(models.Model):
     inmuebles = (
