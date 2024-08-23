@@ -97,10 +97,10 @@ def cambio_password(request, password:str, password_repeat:str):
     messages.success(request, 'Contraseña actualizada exitosamente')
     return True
 
-def obtener_propiedades_comunas(filtro): # recibe nombre o descripción
+def obtener_propiedades_comunas(filtro): 
     if filtro is None:  
-        return Inmueble.objects.all().order_by('comuna') # Entrega un objeto, al poner .value() entrega un diccionario
-    # Si llegamos, hay un filtro
+        return Inmueble.objects.all().order_by('comuna') 
+    
     return Inmueble.objects.filter(Q(nombre__icontains=filtro) | Q(descripcion__icontains=filtro) ).order_by('comuna')  
 
 
@@ -121,12 +121,12 @@ def obtener_propiedades_regiones(filtro):
         '''
     cursor = connection.cursor()
     cursor.execute(consulta)
-    registros = cursor.fetchall() # LAZY LOADING
+    registros = cursor.fetchall() 
     return registros
 
 
 def filtro_comuna_region(comuna_cod, region_cod, tipo_inmueble):
-    query = Q() # Se crear un objeto Q vacío para acumular los filtros
+    query = Q()
 
     if tipo_inmueble:
         query &= Q(tipo_de_inmueble__icontains=tipo_inmueble)
@@ -142,5 +142,5 @@ def filtro_comuna_region(comuna_cod, region_cod, tipo_inmueble):
     if not query:
         return Inmueble.objects.all()
 
-    # Si llega, se retornan los filtros acomulados
+
     return Inmueble.objects.filter(query).order_by('comuna')
